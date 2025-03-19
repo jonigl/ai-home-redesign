@@ -3,7 +3,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useTransform } from '@/context/TransformContext';
-import { useEffect } from 'react';
 
 const SettingsPanel = () => {
   const { apiKey, setApiKey, handleTestConnection, saveApiKey, isSettingsPanelOpen, setIsSettingsPanelOpen } = useTransform();

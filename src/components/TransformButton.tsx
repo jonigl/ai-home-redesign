@@ -2,10 +2,19 @@ import { Loader2, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTransform } from '@/context/TransformContext';
 import { useState, useEffect } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 const TransformButton = () => {
-  const { selectedFile, apiKey, isProcessing, handleTransform, setIsSettingsPanelOpen } = useTransform();
+  const { 
+    apiKey, 
+    isProcessing, 
+    handleTransform, 
+    setIsSettingsPanelOpen, 
+    transformedImage 
+  } = useTransform();
   const [isApiKeySaved, setIsApiKeySaved] = useState<boolean>(false);
+  const [useLastGenerated, setUseLastGenerated] = useState<boolean>(false);
   
   // Function to check API key status
   const checkApiKeyStatus = () => {
@@ -63,7 +72,7 @@ const TransformButton = () => {
     if (!isApiKeySaved) {
       openSettingsPanel();
     } else {
-      handleTransform();
+      handleTransform(useLastGenerated);
     }
   };
 
@@ -76,27 +85,43 @@ const TransformButton = () => {
             <span>API key needs to be saved first</span>
           </div>
         )}
-        <Button
-          className="w-full max-w-lg mx-auto"
-          size="lg"
-          onClick={handleButtonClick}
-          disabled={isProcessing}
-          variant={!isApiKeySaved ? "outline" : "default"}
-        >
-          {isProcessing ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Processing...
-            </>
-          ) : !isApiKeySaved ? (
-            <>
-              <Settings className="w-4 h-4 mr-2" />
-              Set up API Key
-            </>
-          ) : (
-            'Transform Room'
+        <div className="flex items-center justify-between max-w-lg mx-auto">
+          <Button
+            className="flex-1"
+            size="lg"
+            onClick={handleButtonClick}
+            disabled={isProcessing}
+            variant={!isApiKeySaved ? "outline" : "default"}
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : !isApiKeySaved ? (
+              <>
+                <Settings className="w-4 h-4 mr-2" />
+                Set up API Key
+              </>
+            ) : (
+              'Transform Room'
+            )}
+          </Button>
+          
+          {transformedImage && (
+            <div className="flex items-center ml-4">
+              <Checkbox 
+                id="useLastGenerated" 
+                checked={useLastGenerated} 
+                onCheckedChange={(checked) => setUseLastGenerated(checked === true)} 
+                disabled={!transformedImage}
+              />
+              <Label htmlFor="useLastGenerated" className="ml-2 text-sm">
+                Use last generated
+              </Label>
+            </div>
           )}
-        </Button>
+        </div>
       </div>
     </div>
   );

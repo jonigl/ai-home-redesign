@@ -24,7 +24,7 @@ type TransformContextType = {
   handleDrop: (event: React.DragEvent) => void;
   handleDragOver: (event: React.DragEvent) => void;
   handleClear: () => void;
-  handleTransform: () => Promise<void>;
+  handleTransform: (useLastGenerated?: boolean) => Promise<void>;
   handleTestConnection: () => Promise<void>;
   handleDownloadImage: () => void;
   saveApiKey: () => void;
@@ -157,8 +157,8 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
-  const handleTransform = async () => {
-    if (!selectedFile) {
+  const handleTransform = async (useLastGenerated: boolean = false) => {
+    if (!selectedFile && !useLastGenerated) {
       toast({
         title: 'Error',
         description: 'Please upload an image',
@@ -185,9 +185,41 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
       const selectedStyleInfo = STYLE_PRESETS.find(style => style.id === selectedStyle);
       if (!selectedStyleInfo) throw new Error('Style not found');
       
+      let sourceImage: File | string | null = selectedFile;
+      let sourcePreviewUrl = previewUrl;
+      
+      // If using the last generated image and it exists
+      if (useLastGenerated && transformedImage) {
+        // Convert the transformedImage URL to a File object
+        try {
+          const response = await fetch(transformedImage);
+          const blob = await response.blob();
+          sourceImage = new File([blob], 'last-generated-image.png', { type: 'image/png' });
+          sourcePreviewUrl = transformedImage;
+        } catch (error) {
+          console.error('Error converting last generated image:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to use the last generated image',
+            variant: 'destructive',
+          });
+          return;
+        }
+      }
+      
+      if (!sourceImage) {
+        toast({
+          title: 'Error',
+          description: 'No source image available',
+          variant: 'destructive',
+        });
+        setIsProcessing(false);
+        return;
+      }
+      
       const transformedImageUrl = await geminiService.transformImage(
         apiKey,
-        selectedFile,
+        sourceImage,
         selectedStyleInfo.name,
         selectedStyleInfo.description,
         customInstructions
@@ -195,11 +227,11 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
       
       setTransformedImage(transformedImageUrl);
       
-      if (previewUrl) {
+      if (sourcePreviewUrl) {
         setHistory(prev => [
           ...prev, 
           { 
-            original: previewUrl, 
+            original: sourcePreviewUrl, 
             transformed: transformedImageUrl 
           }
         ]);
@@ -218,11 +250,12 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
       });
       
       // For demo/fallback purposes only
-      setTransformedImage(STYLE_PRESETS.find(style => style.id === selectedStyle)?.image || null);
-      if (previewUrl) {
+      const fallbackImage = STYLE_PRESETS.find(style => style.id === selectedStyle)?.image || null;
+      setTransformedImage(fallbackImage);
+      if (previewUrl && fallbackImage) {
         setHistory(prev => [...prev, { 
           original: previewUrl, 
-          transformed: STYLE_PRESETS.find(style => style.id === selectedStyle)?.image || ''
+          transformed: fallbackImage
         }]);
       }
     } finally {
