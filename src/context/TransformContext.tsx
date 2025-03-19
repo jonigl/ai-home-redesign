@@ -28,6 +28,8 @@ type TransformContextType = {
   handleTestConnection: () => Promise<void>;
   handleDownloadImage: () => void;
   saveApiKey: () => void;
+  isSettingsPanelOpen: boolean;
+  setIsSettingsPanelOpen: (open: boolean) => void;
 };
 
 const TransformContext = createContext<TransformContextType | undefined>(undefined);
@@ -42,6 +44,7 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [isProcessing, setIsProcessing] = useState(false);
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [history, setHistory] = useState<Array<{ original: string; transformed: string }>>([]);
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
 
   useEffect(() => {
     const savedApiKey = localStorage.getItem('geminiApiKey');
@@ -155,12 +158,24 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const handleTransform = async () => {
-    if (!selectedFile || !apiKey) {
+    if (!selectedFile) {
       toast({
         title: 'Error',
-        description: 'Please upload an image and enter your API key',
+        description: 'Please upload an image',
         variant: 'destructive',
       });
+      return;
+    }
+
+    // Check if API key is saved in localStorage
+    const savedApiKey = localStorage.getItem('geminiApiKey');
+    if (!savedApiKey) {
+      toast({
+        title: 'API Key Required',
+        description: 'Please save your API key in settings first',
+        variant: 'destructive',
+      });
+      setIsSettingsPanelOpen(true);
       return;
     }
 
@@ -252,7 +267,9 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
         handleTransform,
         handleTestConnection,
         handleDownloadImage,
-        saveApiKey
+        saveApiKey,
+        isSettingsPanelOpen,
+        setIsSettingsPanelOpen
       }}
     >
       {children}

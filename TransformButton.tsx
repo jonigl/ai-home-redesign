@@ -7,49 +7,38 @@ const TransformButton = () => {
   const { selectedFile, apiKey, isProcessing, handleTransform, setIsSettingsPanelOpen } = useTransform();
   const [isApiKeySaved, setIsApiKeySaved] = useState<boolean>(false);
   
-  // Function to check API key status
-  const checkApiKeyStatus = () => {
-    const savedApiKey = localStorage.getItem('geminiApiKey');
-    console.log('Checking API key status:', !!savedApiKey);
-    setIsApiKeySaved(!!savedApiKey);
-  };
-  
   useEffect(() => {
-    // Check on initial mount
-    checkApiKeyStatus();
-    
-    // Check whenever apiKey changes
-    if (apiKey) {
-      checkApiKeyStatus();
-    }
-    
-    // Set up event listeners for storage changes
-    const handleStorageEvent = () => {
-      console.log('Storage event triggered, rechecking API key');
-      checkApiKeyStatus();
+    // Check if API key is saved in localStorage
+    const checkApiKey = () => {
+      const savedApiKey = localStorage.getItem('geminiApiKey');
+      setIsApiKeySaved(!!savedApiKey);
     };
     
-    window.addEventListener('storage', handleStorageEvent);
+    // Initial check
+    checkApiKey();
     
-    // Custom event listener for direct communication
-    const handleCustomEvent = () => {
-      console.log('API key saved event triggered');
-      checkApiKeyStatus();
+    // Set up event listener for localStorage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'geminiApiKey') {
+        checkApiKey();
+      }
     };
     
-    window.addEventListener('apiKeySaved', handleCustomEvent);
+    window.addEventListener('storage', handleStorageChange);
     
-    // Set up an interval to periodically check (as a fallback)
-    const intervalId = setInterval(() => {
-      checkApiKeyStatus();
-    }, 2000);
+    // Also re-check when apiKey state changes
+    checkApiKey();
     
     return () => {
-      window.removeEventListener('storage', handleStorageEvent);
-      window.removeEventListener('apiKeySaved', handleCustomEvent);
-      clearInterval(intervalId);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, [apiKey]);
+  
+  // Add a manual check function that can be called after saving the API key
+  const checkApiKeyStatus = () => {
+    const savedApiKey = localStorage.getItem('geminiApiKey');
+    setIsApiKeySaved(!!savedApiKey);
+  };
 
   // Ensure this function directly opens the settings panel
   const openSettingsPanel = () => {
@@ -58,13 +47,13 @@ const TransformButton = () => {
   };
 
   const handleButtonClick = () => {
-    checkApiKeyStatus(); // Check right before handling the click
-    
     if (!isApiKeySaved) {
       openSettingsPanel();
     } else {
       handleTransform();
     }
+    // After any action, check the API key status again
+    checkApiKeyStatus();
   };
 
   return (

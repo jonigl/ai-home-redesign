@@ -3,13 +3,13 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useAppContext } from '@/context/AppContext';
 import { testApiConnection } from '@/utils/apiUtils';
 
 const SettingsPanel = () => {
   const { toast } = useToast();
-  const { apiKey, setApiKey, saveApiKey } = useAppContext();
+  const { apiKey, setApiKey, saveApiKey, isSettingsPanelOpen, setIsSettingsPanelOpen } = useAppContext();
 
   const handleTestConnection = async () => {
     if (!apiKey) {
@@ -41,6 +41,15 @@ const SettingsPanel = () => {
 
   const handleSaveApiKey = () => {
     saveApiKey();
+    
+    // Dispatch a storage event to notify other components
+    window.dispatchEvent(new Event('storage'));
+    
+    // Close the panel after a short delay
+    setTimeout(() => {
+      setIsSettingsPanelOpen(false);
+    }, 1000);
+    
     toast({
       title: 'Success',
       description: apiKey ? 'API key saved' : 'API key cleared',
@@ -48,12 +57,7 @@ const SettingsPanel = () => {
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Settings className="h-5 w-5" />
-        </Button>
-      </SheetTrigger>
+    <Sheet open={isSettingsPanelOpen} onOpenChange={setIsSettingsPanelOpen}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Configuration</SheetTitle>
