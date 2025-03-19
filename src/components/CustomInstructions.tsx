@@ -7,17 +7,17 @@ const CustomInstructions = () => {
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="instructions">Custom Instructions</Label>
+      <Label className='font-bold' htmlFor="instructions">Custom Instructions</Label>
       <Textarea
         id="instructions"
         placeholder="Describe your desired room changes (e.g., 'Add a blue accent wall with floating shelves')"
         maxLength={200}
         value={customInstructions}
         onChange={(e) => setCustomInstructions(e.target.value)}
-        className="resize-none h-32"
+        className="resize-none h-24"
       />
       <p className="text-sm text-muted-foreground text-right">
-        {customInstructions.length}/200
+        {customInstructions.length}/250
       </p>
     </div>
   );

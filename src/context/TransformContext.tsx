@@ -142,8 +142,6 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const handleTransform = async (useLastGenerated: boolean = false) => {
     if (!selectedFile && !useLastGenerated) {
-      // Add test toast to see if it works
-      toast('Debug: Testing toast visibility');
       toast.error('Please upload an image', {
         duration: 10000, // Longer duration for testing
       });

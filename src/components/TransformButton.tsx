@@ -1,4 +1,4 @@
-import { Loader2, Settings } from 'lucide-react';
+import { Github, Heart, Loader2, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTransform } from '@/context/TransformContext';
 import { useState, useEffect } from 'react';
@@ -123,6 +123,26 @@ const TransformButton = () => {
           )}
         </div>
       </div>
+      <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2 ml-4 justify-center mt-2">
+            Made with <Heart className="w-4 h-4 text-red-500" fill="currentColor" /> by{" "}
+            <a 
+              href="https://github.com/jonigl" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:underline hover:text-gray-700 dark:hover:text-gray-300"
+            >
+              jonigl
+            </a>{" "}
+            |{" "}
+            <a 
+              href="https://github.com/jonigl/ai-home-redesign" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:underline hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1"
+            >
+              <Github className="w-4 h-4" /> GitHub Repo
+            </a>
+          </div>
     </div>
   );
 };
