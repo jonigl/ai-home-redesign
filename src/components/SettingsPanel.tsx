@@ -47,6 +47,7 @@ const SettingsPanel = () => {
           <div className="flex space-x-2">
             <Button onClick={handleTestConnection} className="flex-1">Test Connection</Button>
             <Button variant="outline" onClick={handleSaveClick} className="flex-1">Save</Button>
+            {/* <Button onClick={handleSaveClick} className="flex-1">Save</Button> */}
           </div>
         </div>
       </SheetContent>

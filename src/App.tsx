@@ -5,10 +5,12 @@ import StyleSelector from "@/components/StyleSelector";
 import CustomInstructions from "@/components/CustomInstructions";
 import TransformButton from "@/components/TransformButton";
 import { TransformProvider } from "@/context/TransformContext";
+import { Toaster } from "sonner";
 
 function App() {
   return (
     <div className="bg-background min-h-screen w-screen">
+      <Toaster position="bottom-right" richColors />
       <TransformProvider>
         <div className="container max-w-7xl px-4 m-auto">
           <Header />

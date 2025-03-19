@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { STYLE_PRESETS } from '@/constants/stylePresets';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner'; // Direct import
 import * as geminiService from '@/services/geminiService';
 
 type TransformContextType = {
@@ -35,7 +35,6 @@ type TransformContextType = {
 const TransformContext = createContext<TransformContextType | undefined>(undefined);
 
 export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<string>('minimalist');
@@ -57,19 +56,12 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        toast({
-          title: 'Error',
-          description: 'File size must be less than 10MB',
-          variant: 'destructive',
-        });
+        // Simple toast call
+        toast.error('File size must be less than 10MB');
         return;
       }
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        toast({
-          title: 'Error',
-          description: 'Only JPG, PNG, and WebP files are supported',
-          variant: 'destructive',
-        });
+        toast.error('Only JPG, PNG, and WebP files are supported');
         return;
       }
       setSelectedFile(file);
@@ -83,19 +75,11 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
     const file = event.dataTransfer.files[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        toast({
-          title: 'Error',
-          description: 'File size must be less than 10MB',
-          variant: 'destructive',
-        });
+        toast.error('File size must be less than 10MB');
         return;
       }
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        toast({
-          title: 'Error',
-          description: 'Only JPG, PNG, and WebP files are supported',
-          variant: 'destructive',
-        });
+        toast.error('Only JPG, PNG, and WebP files are supported');
         return;
       }
       setSelectedFile(file);
@@ -116,53 +100,52 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const handleTestConnection = async () => {
     if (!apiKey) {
-      toast({
-        title: 'Error',
-        description: 'Please enter your API key',
-        variant: 'destructive',
-      });
+      toast.error('Please enter your API key');
+      // Also log to console for debugging
+      console.log('Toast shown: Please enter your API key');
       return;
     }
     
     try {
       await geminiService.testConnection(apiKey);
-      toast({
-        title: 'Success',
-        description: 'API connection successful! Your API key is valid.',
-      });
+      toast.success('API connection successful! Your API key is valid.');
+      console.log('Toast shown: API connection successful');
       localStorage.setItem('geminiApiKey', apiKey);
     } catch (error) {
       console.error('API key validation error:', error);
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Invalid API key or insufficient permissions',
-        variant: 'destructive',
-      });
+      
+      // Extract meaningful error message
+      let errorMessage = 'Invalid API key or insufficient permissions';
+      if (error instanceof Error) {
+        if (error.message.includes('API_KEY_INVALID')) {
+          errorMessage = 'Invalid API key. Please check your API key and try again.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      // Show toast and also log for debugging
+      console.log('Showing error toast:', errorMessage);
+      toast.error(errorMessage);      
     }
   };
 
   const saveApiKey = () => {
     if (apiKey) {
       localStorage.setItem('geminiApiKey', apiKey);
-      toast({
-        title: 'Success',
-        description: 'API key saved',
-      });
+      toast.success('API key saved');
     } else {
       localStorage.removeItem('geminiApiKey');
-      toast({
-        title: 'Info',
-        description: 'API key cleared',
-      });
+      toast.info('API key cleared');
     }
   };
 
   const handleTransform = async (useLastGenerated: boolean = false) => {
     if (!selectedFile && !useLastGenerated) {
-      toast({
-        title: 'Error',
-        description: 'Please upload an image',
-        variant: 'destructive',
+      // Add test toast to see if it works
+      toast('Debug: Testing toast visibility');
+      toast.error('Please upload an image', {
+        duration: 10000, // Longer duration for testing
       });
       return;
     }
@@ -170,11 +153,7 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
     // Check if API key is saved in localStorage
     const savedApiKey = localStorage.getItem('geminiApiKey');
     if (!savedApiKey) {
-      toast({
-        title: 'API Key Required',
-        description: 'Please save your API key in settings first',
-        variant: 'destructive',
-      });
+      toast.error('Please save your API key in settings first');
       setIsSettingsPanelOpen(true);
       return;
     }
@@ -198,21 +177,13 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
           sourcePreviewUrl = transformedImage;
         } catch (error) {
           console.error('Error converting last generated image:', error);
-          toast({
-            title: 'Error',
-            description: 'Failed to use the last generated image',
-            variant: 'destructive',
-          });
+          toast.error('Failed to use the last generated image');
           return;
         }
       }
       
       if (!sourceImage) {
-        toast({
-          title: 'Error',
-          description: 'No source image available',
-          variant: 'destructive',
-        });
+        toast.error('No source image available');
         setIsProcessing(false);
         return;
       }
@@ -237,17 +208,28 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
         ]);
       }
       
-      toast({
-        title: 'Success',
-        description: 'Room transformation complete!',
-      });
+      toast.success('Room transformation complete!');
     } catch (error) {
       console.error('Error transforming image:', error);
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to transform the image',
-        variant: 'destructive',
-      });
+      console.log("Showing error toast for:", error);
+      
+      let errorMessage = 'Failed to transform the image, please try again';
+      
+      if (error instanceof Error) {
+        // Check for the specific API key validation error
+        if (error.message.includes("[400 ] API key not valid. Please pass a valid API key.")) {
+          errorMessage = 'Your API key appears to be invalid. Please check your API key in settings.';
+          setIsSettingsPanelOpen(true); // Open settings panel to help user fix the issue
+        } else {
+          // For other errors, include part of the error message for better debugging
+          const errorExcerpt = error.message.length > 100 
+            ? error.message.substring(0, 100) + '...' 
+            : error.message;
+          errorMessage = `Failed to transform: ${errorExcerpt}`;
+        }
+      }
+      
+      toast.error(errorMessage);
       
       // For demo/fallback purposes only
       const fallbackImage = STYLE_PRESETS.find(style => style.id === selectedStyle)?.image || null;
