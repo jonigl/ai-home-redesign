@@ -19,6 +19,8 @@ interface AppContextProps {
   history: HistoryItem[];
   setHistory: (history: HistoryItem[]) => void;
   saveApiKey: () => void;
+  isSettingsPanelOpen: boolean;
+  setIsSettingsPanelOpen: (isOpen: boolean) => void;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -32,6 +34,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
 
   // Load API key from localStorage on component mount
   useEffect(() => {
@@ -69,6 +72,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         history,
         setHistory,
         saveApiKey,
+        isSettingsPanelOpen,
+        setIsSettingsPanelOpen,
       }}
     >
       {children}
