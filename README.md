@@ -4,6 +4,10 @@
 
 AI Home Redesign is a web application that transforms photos of your rooms into different interior design styles using Google's Gemini Flash 2.0 Image Generation API (Experimental).
 
+## 🔗 Live Demo
+
+**Try it now:** [https://jonigl.github.io/ai-home-redesign/](https://jonigl.github.io/ai-home-redesign/)
+
 ![AI Home Redesign Demo](misc/ai-home-redesign-cover.gif)
 
 ## ✨ Features
@@ -18,6 +22,8 @@ AI Home Redesign is a web application that transforms photos of your rooms into 
 - 📤 Share your designs on social media platforms
 
 ## 🚀 Getting Started
+
+You can use the application directly in your browser at [https://jonigl.github.io/ai-home-redesign/](https://jonigl.github.io/ai-home-redesign/) or set up your own local instance following the instructions below.
 
 ### Prerequisites
 
