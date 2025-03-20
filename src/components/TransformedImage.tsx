@@ -18,7 +18,7 @@ const TransformedImage = () => {
   const [_copySuccess, setCopySuccess] = useState(false);
   
   const shareText = "Look how I redesigned my room using AI Home Redesign!";
-  const shareUrl = "http://jonigl.github.io/ai-home-redesign"; ;
+  const shareUrl = "https://jonigl.github.io/ai-home-redesign"; ;
   
   const handleFacebookShare = () => {
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
