@@ -42,7 +42,7 @@ export const transformImage = async (
       topP: 0.95,
       topK: 40,
       maxOutputTokens: 8192,
-    }
+    } as any
   });
   
   // Convert the image file to base64

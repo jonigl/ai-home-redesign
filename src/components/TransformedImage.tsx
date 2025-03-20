@@ -1,7 +1,7 @@
 import { Download, Share2, Facebook, Twitter, Linkedin, Copy, Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTransform } from '@/context/TransformContext';
-import { useState, useRef, useEffect } from 'react';
+import { useState} from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,10 +15,10 @@ import { Card } from './ui/card';
 const TransformedImage = () => {
   const { transformedImage, handleDownloadImage } = useTransform();
   
-  const [copySuccess, setCopySuccess] = useState(false);
+  const [_copySuccess, setCopySuccess] = useState(false);
   
   const shareText = "Look how I redesigned my room using AI Home Redesign!";
-  const shareUrl = "https://example.com";
+  const shareUrl = "http://jonigl.github.io/ai-home-redesign"; ;
   
   const handleFacebookShare = () => {
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
