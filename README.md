@@ -114,9 +114,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 👏 Acknowledgements
 
 - [Google Gemini API](https://ai.google.dev/) for the image transformation capabilities
+- [vite](https://vitejs.dev/) for the build tool
+- [React](https://reactjs.org/) for the frontend framework
+- [TypeScript](https://www.typescriptlang.org/) for static typing
 - [shadcn/ui](https://ui.shadcn.com/) for UI components
 - [TailwindCSS](https://tailwindcss.com/) for styling
 - [Lucide](https://lucide.dev/) for icons
+- [twemoji](https://github.com/twitter/twemoji) for emojis
 - [Sonner](https://sonner.io/) for notifications
 - [GitHub Copilot](https://copilot.github.com/) for code suggestions
 - [bolt.new](https://bolt.new/) for quick project setup
