@@ -77,7 +77,7 @@ const TransformButton = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t p-4">
+    <div className="fixed bottom-0 left-0 right-0 p-4">
       <div className="container mx-auto px-4">
         {!isApiKeySaved && (
           <div className="text-center text-amber-500 mb-2 flex items-center justify-center gap-1">

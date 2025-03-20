@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
+import { ShineBorder } from './magicui/shine-border';
+import { Card } from './ui/card';
 
 const TransformedImage = () => {
   const { transformedImage, handleDownloadImage } = useTransform();
@@ -55,7 +57,7 @@ const TransformedImage = () => {
   };
   
   return (
-    <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+    <Card className="aspect-video bg-muted rounded-lg flex items-center justify-center relative overflow-hidden">  
       {transformedImage ? (
         <div className="relative w-full h-full">
           <img
@@ -103,7 +105,8 @@ const TransformedImage = () => {
       ) : (
         <p className="text-muted-foreground">Transform an image to see the result</p>
       )}
-    </div>
+      <ShineBorder borderWidth={2} duration={12} shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
+    </Card>
   );
 };
 
