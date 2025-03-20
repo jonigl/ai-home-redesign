@@ -1,4 +1,4 @@
-import { Github, Heart, Info, Loader2, Settings } from 'lucide-react';
+import { Github, Heart, Loader2, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTransform } from '@/context/TransformContext';
 import { useState, useEffect } from 'react';
@@ -12,7 +12,6 @@ const TransformButton = () => {
     handleTransform, 
     setIsSettingsPanelOpen, 
     transformedImage,
-    persistApiKey
   } = useTransform();
   const [isApiKeySaved, setIsApiKeySaved] = useState<boolean>(false);
   const [useLastGenerated, setUseLastGenerated] = useState<boolean>(false);
@@ -75,12 +74,6 @@ const TransformButton = () => {
           <div className="text-center text-amber-500 mb-2 flex items-center justify-center gap-1 bg-amber-100 rounded-lg w-fit p-3 mx-auto border border-amber-200">
             <Settings className="h-4 w-4" />
             <span>API key needs to be entered first</span>
-          </div>
-        )}
-        {isApiKeySaved && !persistApiKey && (
-          <div className="text-center text-blue-500 mb-2 flex items-center justify-center gap-1 bg-blue-50 rounded-lg w-fit p-3 mx-auto border border-blue-100">
-            <Info className="h-4 w-4" />
-            <span>API key will be lost when page is refreshed</span>
           </div>
         )}
         <div className="flex items-center justify-between max-w-lg mx-auto">
