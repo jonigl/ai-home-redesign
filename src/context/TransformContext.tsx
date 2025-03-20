@@ -1,7 +1,8 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect, ReactNode, useRef } from 'react';
 import { STYLE_PRESETS } from '@/constants/stylePresets';
 import { toast } from 'sonner'; // Direct import
 import * as geminiService from '@/services/geminiService';
+import { encryptApiKey, decryptApiKey } from '@/utils/cryptoUtils';
 
 type TransformContextType = {
   apiKey: string;
@@ -30,6 +31,8 @@ type TransformContextType = {
   saveApiKey: () => void;
   isSettingsPanelOpen: boolean;
   setIsSettingsPanelOpen: (open: boolean) => void;
+  persistApiKey: boolean;
+  setPersistApiKey: (persist: boolean) => void;
 };
 
 const TransformContext = createContext<TransformContextType | undefined>(undefined);
@@ -44,13 +47,63 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [history, setHistory] = useState<Array<{ original: string; transformed: string }>>([]);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+  const [persistApiKey, setPersistApiKey] = useState(false);
+  
+  // Add a ref to track if this is the initial load
+  const isInitialLoadRef = useRef(true);
 
   useEffect(() => {
-    const savedApiKey = localStorage.getItem('geminiApiKey');
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
+    // Check only localStorage on initial load
+    const savedEncryptedApiKey = localStorage.getItem('geminiApiKey');
+    if (savedEncryptedApiKey) {
+      setApiKey(decryptApiKey(savedEncryptedApiKey));
+      setPersistApiKey(true); // If we found a saved key, persist setting should be true
     }
+    
+    // After initial setup is complete
+    setTimeout(() => {
+      isInitialLoadRef.current = false;
+    }, 500);
   }, []);
+
+  // Effect to handle toggling the persist setting
+  useEffect(() => {
+    // Skip during initial load to prevent unwanted behavior
+    if (isInitialLoadRef.current) return;
+    
+    if (!persistApiKey) {
+      // When toggling OFF, always remove from localStorage
+      if (localStorage.getItem('geminiApiKey')) {
+        localStorage.removeItem('geminiApiKey');
+        toast.info('API key removed from browser storage. It will only be available for this session.');
+      }
+    } else {
+      // When toggling ON, just show info but don't save - that happens with Save button
+      toast.info('API key will be saved to browser storage when you click Save.');
+    }
+  }, [persistApiKey]);
+
+  // Update saveApiKey function to handle the persistApiKey preference
+  const saveApiKey = () => {
+    if (apiKey) {
+      if (persistApiKey) {
+        // Only save to localStorage if persistApiKey is true
+        localStorage.setItem('geminiApiKey', encryptApiKey(apiKey));
+        toast.success('API key saved to browser storage');
+      } else {
+        // Just keep in memory and notify user
+        localStorage.removeItem('geminiApiKey'); // Ensure any previous key is removed
+        toast.success('API key will be used for this session only');
+      }
+    } else {
+      // Clear storage if the API key is empty
+      localStorage.removeItem('geminiApiKey');
+      toast.info('API key cleared');
+    }
+    
+    // Dispatch event to notify other components
+    window.dispatchEvent(new Event('apiKeySaved'));
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -110,7 +163,6 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
       await geminiService.testConnection(apiKey);
       toast.success('API connection successful! Your API key is valid.');
       console.log('Toast shown: API connection successful');
-      localStorage.setItem('geminiApiKey', apiKey);
     } catch (error) {
       console.error('API key validation error:', error);
       
@@ -130,16 +182,6 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
-  const saveApiKey = () => {
-    if (apiKey) {
-      localStorage.setItem('geminiApiKey', apiKey);
-      toast.success('API key saved');
-    } else {
-      localStorage.removeItem('geminiApiKey');
-      toast.info('API key cleared');
-    }
-  };
-
   const handleTransform = async (useLastGenerated: boolean = false) => {
     if (!selectedFile && !useLastGenerated) {
       toast.error('Please upload an image', {
@@ -148,10 +190,11 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
       return;
     }
 
-    // Check if API key is saved in localStorage
-    const savedApiKey = localStorage.getItem('geminiApiKey');
-    if (!savedApiKey) {
-      toast.error('Please save your API key in settings first');
+    // Check if API key exists either in localStorage or in memory
+    const localStorageKey = localStorage.getItem('geminiApiKey');
+    
+    if (!localStorageKey && !apiKey) {
+      toast.error('Please enter your API key in settings first');
       setIsSettingsPanelOpen(true);
       return;
     }
@@ -282,7 +325,9 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
         handleDownloadImage,
         saveApiKey,
         isSettingsPanelOpen,
-        setIsSettingsPanelOpen
+        setIsSettingsPanelOpen,
+        persistApiKey,
+        setPersistApiKey
       }}
     >
       {children}

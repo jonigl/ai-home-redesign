@@ -2,10 +2,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Switch } from '@/components/ui/switch';
 import { useTransform } from '@/context/TransformContext';
+import { Info } from 'lucide-react';
+import { toast } from 'sonner';
 
 const SettingsPanel = () => {
-  const { apiKey, setApiKey, handleTestConnection, saveApiKey, isSettingsPanelOpen, setIsSettingsPanelOpen } = useTransform();
+  const { 
+    apiKey, 
+    setApiKey, 
+    handleTestConnection, 
+    saveApiKey, 
+    isSettingsPanelOpen, 
+    setIsSettingsPanelOpen,
+    persistApiKey,
+    setPersistApiKey
+  } = useTransform();
 
   const handleSaveClick = () => {
     saveApiKey();
@@ -17,6 +29,10 @@ const SettingsPanel = () => {
     setTimeout(() => {
       setIsSettingsPanelOpen(false);
     }, 1000);
+  };
+
+  const handlePersistToggle = (checked: boolean) => {
+    setPersistApiKey(checked);
   };
 
   return (
@@ -44,10 +60,32 @@ const SettingsPanel = () => {
               How to get a Google Gemini API key
             </a>
           </div>
+
+          <div className="flex items-center space-x-2 pt-2">
+            <Switch 
+              id="persist-api-key" 
+              checked={persistApiKey} 
+              onCheckedChange={handlePersistToggle} 
+            />
+            <Label htmlFor="persist-api-key" className="cursor-pointer">
+              Remember API key
+            </Label>
+            <div className="group relative">
+              <Info className="h-4 w-4 text-muted-foreground" />
+              <div className="absolute right-2 bottom-full mb-2 hidden w-64 rounded-md bg-popover p-3 text-xs text-popover-foreground shadow-2xl border group-hover:block z-50">
+                When enabled, your API key will be saved in browser local storage and persist 
+                between sessions. If disabled, the key will only be available for the 
+                current session and will be lost when you reload or close the page. 
+                Your API key is stored with basic encryption when saved.
+              </div>
+            </div>
+          </div>
+
           <div className="flex space-x-2">
-            <Button onClick={handleTestConnection} className="flex-1">Test Connection</Button>
-            <Button variant="outline" onClick={handleSaveClick} className="flex-1">Save</Button>
-            {/* <Button onClick={handleSaveClick} className="flex-1">Save</Button> */}
+            <Button variant="default" onClick={handleSaveClick} className="flex-1">
+              {persistApiKey ? 'Save' : 'Use for this session'}
+            </Button>
+            <Button variant="outline" onClick={handleTestConnection} className="flex-1">Test Connection</Button>
           </div>
         </div>
       </SheetContent>
