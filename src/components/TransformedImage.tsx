@@ -17,7 +17,7 @@ const TransformedImage = () => {
   
   const [_copySuccess, setCopySuccess] = useState(false);
   
-  const shareText = "Look how I redesigned my room using AI Home Redesign!";
+  const shareText = "🏠✨ My room got a complete makeover in seconds using AI! Can you spot what changed? 🪄 Try AI Home Redesign yourself! 😍 #RoomTransformation #AIDesign";
   const shareUrl = "https://jonigl.github.io/ai-home-redesign"; ;
   
   const handleFacebookShare = () => {
