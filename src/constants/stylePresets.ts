@@ -1,39 +1,46 @@
+import minimalist from '../../public/images/minimalist.jpeg';
+import modern from '../../public/images/modern-contemporary.jpeg';
+import scandinavian from '../../public/images/scandinavian.jpeg';
+import industrial from '../../public/images/industrial-chic.jpeg';
+import traditional from '../../public/images/cozy-traditional.jpeg';
+import bohemian from '../../public/images/bohemian.jpeg';
+
 export const STYLE_PRESETS = [
   {
     id: 'minimalist',
     name: 'Minimalist',
     description: 'Clean lines, neutral colors, decluttered spaces',
-    image: '/images/minimalist.jpeg',
+    image: minimalist,
   },
   {
     id: 'modern',
     name: 'Modern Contemporary',
     description: 'Sleek, updated fixtures, current trends',
-    image: '/images/modern-contemporary.jpeg',
+    image: modern,
   },
   {
     id: 'scandinavian',
     name: 'Scandinavian',
     description: 'Light woods, whites, functional design',
-    image: '/images/scandinavian.jpeg',
+    image: scandinavian,
   },
   {
     id: 'industrial',
     name: 'Industrial Chic',
     description: 'Exposed elements, raw materials',
-    image: '/images/industrial-chic.jpeg',
+    image: industrial,
   },
   {
     id: 'traditional',
     name: 'Cozy Traditional',
     description: 'Warm colors, classic elements',
-    image: '/images/cozy-traditional.jpeg',
+    image: traditional,
   },
   {
     id: 'bohemian',
     name: 'Bohemian',
     description: 'Eclectic, colorful, artistic',
-    image: '/images/bohemian.jpeg',
+    image: bohemian,
   },
 ];
 
