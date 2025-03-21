@@ -118,6 +118,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [React](https://reactjs.org/) for the frontend framework
 - [TypeScript](https://www.typescriptlang.org/) for static typing
 - [shadcn/ui](https://ui.shadcn.com/) for UI components
+- [MagicUI](https://magicui.design/) for magic UI components
 - [TailwindCSS](https://tailwindcss.com/) for styling
 - [Lucide](https://lucide.dev/) for icons
 - [twemoji](https://github.com/twitter/twemoji) for emojis
