@@ -1,6 +1,6 @@
 # 🏠 AI Home Redesign
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Deploy static content to Pages](https://github.com/jonigl/ai-home-redesign/actions/workflows/github-page-deploy.yml/badge.svg)](https://github.com/jonigl/ai-home-redesign/actions/workflows/github-page-deploy.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
 AI Home Redesign is a web application that transforms photos of your rooms into different interior design styles using Google's Gemini Flash 2.0 Image Generation API (Experimental).
 
