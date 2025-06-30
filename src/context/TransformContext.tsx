@@ -109,7 +109,6 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        // Simple toast call
         toast.error('File size must be less than 10MB');
         return;
       }
@@ -117,9 +116,13 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
         toast.error('Only JPG, PNG, and WebP files are supported');
         return;
       }
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      try {
+        const url = URL.createObjectURL(file);
+        setSelectedFile(file);
+        setPreviewUrl(url);
+      } catch (error) {
+        toast.error('Failed to generate preview URL');
+      }
     }
   };
 
@@ -135,9 +138,13 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
         toast.error('Only JPG, PNG, and WebP files are supported');
         return;
       }
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      try {
+        const url = URL.createObjectURL(file);
+        setSelectedFile(file);
+        setPreviewUrl(url);
+      } catch (error) {
+        toast.error('Failed to generate preview URL');
+      }
     }
   };
 
