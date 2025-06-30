@@ -118,8 +118,12 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
       try {
         const url = URL.createObjectURL(file);
-        setSelectedFile(file);
-        setPreviewUrl(url);
+        if (url.startsWith('blob:')) {
+          setSelectedFile(file);
+          setPreviewUrl(url);
+        } else {
+          toast.error('Invalid file preview URL');
+        }
       } catch (error) {
         toast.error('Failed to generate preview URL');
       }

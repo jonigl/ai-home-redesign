@@ -16,7 +16,7 @@ const ImageUploader = () => {
       {previewUrl ? (
         <div className="relative w-full h-full">
           <img
-            src={previewUrl}
+            src={previewUrl?.startsWith('blob:') ? previewUrl : ''}
             alt="Preview"
             className="w-full h-full object-cover rounded-lg"
           />
