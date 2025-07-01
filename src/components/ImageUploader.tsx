@@ -20,6 +20,10 @@ const ImageUploader = () => {
               src={previewUrl}
               alt="Preview"
               className="w-full h-full object-cover rounded-lg"
+              onError={(e) => {
+                e.currentTarget.src = '';
+                toast.error('Failed to load preview image.');
+              }}
             />
           ) : (
             <p className="text-sm text-red-500">Invalid preview URL</p>

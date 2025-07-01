@@ -113,8 +113,12 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
       try {
         const url = URL.createObjectURL(file);
-        setSelectedFile(file);
-        setPreviewUrl(url);
+        if (file.type.startsWith('image/')) {
+          setSelectedFile(file);
+          setPreviewUrl(url);
+        } else {
+          toast.error('Selected file is not a valid image.');
+        }
       } catch (error) {
         toast.error('Failed to generate preview URL');
       }
