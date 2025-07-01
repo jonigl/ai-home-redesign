@@ -108,26 +108,29 @@ export const TransformProvider: React.FC<{ children: ReactNode }> = ({ children 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('File size must be less than 10MB');
-        return;
-      }
-      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        toast.error('Only JPG, PNG, and WebP files are supported');
+      if (!validateFile(file)) {
         return;
       }
       try {
         const url = URL.createObjectURL(file);
-        if (url.startsWith('blob:')) {
-          setSelectedFile(file);
-          setPreviewUrl(url);
-        } else {
-          toast.error('Invalid file preview URL');
-        }
+        setSelectedFile(file);
+        setPreviewUrl(url);
       } catch (error) {
         toast.error('Failed to generate preview URL');
       }
     }
+  };
+
+  const validateFile = (file: File): boolean => {
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File size must be less than 10MB');
+      return false;
+    }
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      toast.error('Only JPG, PNG, and WebP files are supported');
+      return false;
+    }
+    return true;
   };
 
   const handleDrop = (event: React.DragEvent) => {

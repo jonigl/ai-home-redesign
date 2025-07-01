@@ -15,11 +15,15 @@ const ImageUploader = () => {
     >
       {previewUrl ? (
         <div className="relative w-full h-full">
-          <img
-            src={previewUrl?.startsWith('blob:') ? previewUrl : ''}
-            alt="Preview"
-            className="w-full h-full object-cover rounded-lg"
-          />
+          {previewUrl?.startsWith('blob:') ? (
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="w-full h-full object-cover rounded-lg"
+            />
+          ) : (
+            <p className="text-sm text-red-500">Invalid preview URL</p>
+          )}
           <Button 
             variant="outline" 
             size="icon"
