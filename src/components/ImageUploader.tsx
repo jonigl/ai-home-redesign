@@ -15,11 +15,19 @@ const ImageUploader = () => {
     >
       {previewUrl ? (
         <div className="relative w-full h-full">
-          <img
-            src={previewUrl}
-            alt="Preview"
-            className="w-full h-full object-cover rounded-lg"
-          />
+          {previewUrl?.startsWith('blob:') ? (
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="w-full h-full object-cover rounded-lg"
+              onError={(e) => {
+                e.currentTarget.src = '';
+                toast.error('Failed to load preview image.');
+              }}
+            />
+          ) : (
+            <p className="text-sm text-red-500">Invalid preview URL</p>
+          )}
           <Button 
             variant="outline" 
             size="icon"
